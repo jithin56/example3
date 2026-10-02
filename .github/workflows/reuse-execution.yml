@@ -1,0 +1,22 @@
+name: Reuse execution
+on:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get code
+              uses: actions/checkout@v7
+            - name: upload code
+              uses: actions/upload-artifact@v7
+              with:
+                name: test-report
+                path: test.json
+    reuse-deploy:
+        needs: lint
+        uses: ./.github/workflows/reuse.yml
+        with:
+            artifact-name: test-report
